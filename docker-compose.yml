@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  panel:
+  pwa:
     build:
       context: .
       dockerfile: Dockerfile
