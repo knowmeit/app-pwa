@@ -1,0 +1,232 @@
+/* Root container for the video section */
+.video-wrapper {
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Title styling */
+.title-root {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+/* Action container styling */
+.action-container {
+  background-color: gray;
+  padding: 10px 0;
+  border-radius: 8px;
+  margin-bottom: 3px;
+}
+
+.action-container p {
+  font-size: 18px;
+  color: white;
+  margin: 0 0 3px 0;
+}
+
+.action-images {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Webcam live preview mirroring */
+.responsive-webcam {
+  width: 100%;
+  /* height: auto; */
+  border-radius: 8px;
+  transform: scaleX(-1); /* Mirror the live webcam preview */
+  object-fit: cover; /* Ensure the webcam fits nicely within the container */
+}
+
+/* Mirror the video content */
+.recorded-video {
+  width: 100%;
+  border-radius: 8px;
+  transform: scaleX(-1); /* Mirror the recorded video */
+  object-fit: cover; /* Ensure the recorded video fits within the container */
+}
+
+/* Custom controls styling */
+.video-controls {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 0;
+  height: 40px;
+}
+
+.video-controls button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px; /* Adjust size for play/pause icon */
+  cursor: pointer;
+  margin: 0;
+  width: auto;
+  padding: 0;
+}
+
+.video-controls button:hover {
+  color: #007bff; /* Change color on hover */
+}
+
+.progress-bar-container {
+  flex-grow: 1;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 5px;
+  background: #666;
+  position: relative;
+}
+
+.progress-bar-filled {
+  background: #fff;
+  height: 100%;
+  width: 0;
+}
+
+.time-display {
+  font-size: 0.8em;
+  padding: 0 5px;
+}
+
+/* Video preview container */
+.preview-container {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Button container */
+.buttons-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Common button styles */
+.record-btn,
+.upload-btn {
+  font-family: "BYekan";
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  margin: 10px auto;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.record-btn:hover,
+.upload-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Timer button styles */
+.record-btn-timing {
+  font-family: "BYekan";
+  font-size: 16px;
+  background-color: white;
+  color: red;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  margin: 10px auto;
+}
+
+.move-action {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.action-images img {
+  width: 60px;
+  height: 60px;
+  margin: 5px 0;
+}
+/* Mobile-specific adjustments */
+@media only screen and (max-width: 768px) {
+  .responsive-webcam {
+    position: relative; /* Required for absolute positioning of action-container */
+    z-index: 1; /* Ensure the webcam is below the action-container */
+  }
+  .recorded-video {
+    width: 100%;
+    max-width: 100%; /* Ensure the video doesn't overflow on mobile */
+    object-fit: cover; /* Ensures the webcam/video fits within the container */
+  }
+
+  .buttons-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .record-btn,
+  .upload-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 15px 0;
+  }
+
+  .action-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    margin: 10px;
+    z-index: 2; /* Ensure it's above the webcam */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .action-container p {
+    font-size: 14px;
+  }
+
+  .action-images img {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* .move-action {
+    width: 40px;
+    height: 40px;
+  } */
+}
+
+/* Tablet-specific adjustments */
+@media only screen and (max-width: 1024px) {
+  .record-btn,
+  .upload-btn {
+    width: 80%;
+  }
+}
