@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const TextDivisionComponent = () => {
-  const actions = window.sessionStorage.getItem("actions");
+  const token = window.localStorage.getItem("token");
   const navigate = useNavigate();
-  const [myactions, set_myactions] = useState([]);
+  const [actions, set_actions] = useState([]);
 
   const handleSubmit = () => {
     navigate("/record-video");
@@ -21,11 +21,17 @@ const TextDivisionComponent = () => {
   };
 
   const getActions = async () => {
-    const all_actions = actions;
-    const translated = all_actions.map(
-      (action) => actionTranslations[action] || action
-    );
-    set_myactions(translated);
+    await axios
+      .get(`${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`)
+      .then((res) => {
+        console.log(res.data.data.instruction);
+        const all_actions = res.data.data.instruction;
+        const translated = all_actions.map(
+          (action) => actionTranslations[action] || action
+        );
+        set_actions(translated);
+        window.sessionStorage.setItem("actions", all_actions);
+      });
   };
 
   useEffect(() => {
@@ -43,13 +49,13 @@ const TextDivisionComponent = () => {
       <ol>
         <li>
           {" "}
-          ابتدا به <b>{myactions[0]}</b> نگاه کنید
+          ابتدا به <b>{actions[0]}</b> نگاه کنید
         </li>
         <li>
-          سپس با دقت به <b>{myactions[1]}</b> نگاه کنید
+          سپس با دقت به <b>{actions[1]}</b> نگاه کنید
         </li>
         <li>
-          در نهایت دوباره به <b>{myactions[2]}</b> نگاه کنید
+          در نهایت دوباره به <b>{actions[2]}</b> نگاه کنید
         </li>
       </ol>
       <h3>نکات مهم</h3>
