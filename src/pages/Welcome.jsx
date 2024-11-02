@@ -19,7 +19,7 @@ const Welcome = () => {
       setLoading(true);
 
       axios
-        .post(
+        .get(
           `${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`
         )
         .then((res) => {
