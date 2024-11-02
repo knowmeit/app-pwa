@@ -171,7 +171,7 @@ const WebcamRecorder = () => {
           )
           .then((res) => {
             setUploading(false);
-            window.location.href = "/result";
+            window.location.href = "/redirect";
           })
           .catch((e) => {
             setUploading(false);

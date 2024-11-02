@@ -5,14 +5,15 @@ import RecordVideo from "../pages/RecordVideo";
 import Result from "../pages/Result";
 import Welcome from "../pages/Welcome";
 import CapturePhoto from "../pages/UploadPhoto";
+import RedirectToApp from "../pages/Redirect";
 
 const routeConfig = [
   { path: "/", component: Welcome, isPrivate: false },
-  // { path: "/form", component: FillForm, isPrivate: false },
   { path: "/record-video", component: RecordVideo, isPrivate: true },
   { path: "/help", component: Home, isPrivate: false },
   { path: "/result", component: Result, isPrivate: true },
   { path: "/upload-photo", component: CapturePhoto, isPrivate: true },
+  { path: "/redirect", component: RedirectToApp, isPrivate: false },
 ];
 
 const PrivateRoute = ({ children }) => {

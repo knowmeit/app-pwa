@@ -68,7 +68,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    margin: "45% 0",
+    marginTop: "200px",
   },
 };
 

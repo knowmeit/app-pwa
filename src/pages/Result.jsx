@@ -28,7 +28,7 @@ const Result = () => {
 
     setTimeout(async () => {
       await axios
-        .post(`${window.BASE_URL_KNOWME_CLIENT}/sandbox/take_result`, data, {
+        .post(`${window.BASE_URL_KNOWME}/sandbox/take_result`, data, {
           headers: {
             "SERVICE-ID": selectedServiceId,
           },
