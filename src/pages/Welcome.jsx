@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdMargin } from "react-icons/md";
-
+import useDisableBackNavigation from "../components/BackNavigationPreventer";
 const Welcome = () => {
+  useDisableBackNavigation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -23,28 +23,40 @@ const Welcome = () => {
           `${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`
         )
         .then((res) => {
-          const all_actions = res.data.data.instruction;
-          window.sessionStorage.setItem("actions", all_actions);
-          window.localStorage.setItem("redirect_to", res.data.data.redirect_to);
-          if (res.data.data.service_codename === "liveness-verification-001") {
-            window.localStorage.setItem("typeOfAuth", "sabteAhval");
-          } else {
-            window.localStorage.setItem("typeOfAuth", "karteMelli");
-          }
-          window.localStorage.setItem(
-            "service_codename",
-            res.data.data.service_codename
-          );
           console.log(res);
-          setTimeout(() => {
+          if (res.status === 200) {
+            const all_actions = res.data.data.instruction;
+            window.sessionStorage.setItem("actions", all_actions);
+            window.localStorage.setItem(
+              "redirect_to",
+              res.data.data.redirect_to
+            );
             if (
               res.data.data.service_codename === "liveness-verification-001"
             ) {
-              window.location.href = "/help";
+              window.localStorage.setItem("typeOfAuth", "sabteAhval");
             } else {
-              window.location.href = "/upload-photo";
+              window.localStorage.setItem("typeOfAuth", "karteMelli");
             }
-          }, 3000);
+            window.localStorage.setItem(
+              "service_codename",
+              res.data.data.service_codename
+            );
+            console.log(res);
+            setTimeout(() => {
+              if (
+                res.data.data.service_codename === "liveness-verification-001"
+              ) {
+                navigate("/help");
+              } else {
+                navigate("/upload-photo");
+              }
+            }, 3000);
+          } else if (res.status === 401) {
+            window.showToast("error", "نشست شما منقضی شده است!");
+          } else {
+            window.showToast("error", res.status);
+          }
         })
         .catch((error) => {
           console.error("Error calling API:", error);
