@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import useDisableBackNavigation from "./BackNavigationPreventer";
 
 const TextDivisionComponent = () => {
   const token = window.localStorage.getItem("token");
+  useDisableBackNavigation();
   const navigate = useNavigate();
   const [actions, set_actions] = useState([]);
 
