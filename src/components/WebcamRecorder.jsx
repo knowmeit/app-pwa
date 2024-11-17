@@ -10,6 +10,7 @@ const WebcamRecorder = () => {
   const [capturing, setCapturing] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState(null);
   const [countdown, setCountdown] = useState(6);
   const [recordingComplete, setRecordingComplete] = useState(false);
@@ -21,14 +22,13 @@ const WebcamRecorder = () => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   const token = window.localStorage.getItem("token");
-
   const isIOS = () =>
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   const videoConstraints = {
-    width: 1280,
-    height: 720,
-    frameRate: 30,
+    width: { ideal: 1920 },
+    height: { ideal: 1080 },
+    frameRate: { ideal: 30 },
     facingMode: "user",
   };
 
@@ -52,38 +52,14 @@ const WebcamRecorder = () => {
   };
 
   useEffect(() => {
-    if (webcamRef.current && webcamRef.current.stream) {
-      navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-    }
-
-    const updateHeight = () => {
-      setScreenHeight(window.innerHeight);
-    };
+    const updateHeight = () => setScreenHeight(window.innerHeight);
+    const updateWidth = () => setScreenWidth(window.innerWidth);
 
     window.addEventListener("resize", updateHeight);
-
-    updateHeight();
+    window.addEventListener("resize", updateWidth);
 
     return () => {
       window.removeEventListener("resize", updateHeight);
-    };
-  }, []);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", updateWidth);
-
-    // Initial width set
-    updateWidth();
-
-    // Cleanup the event listener on component unmount
-    return () => {
       window.removeEventListener("resize", updateWidth);
     };
   }, []);
@@ -104,13 +80,14 @@ const WebcamRecorder = () => {
       );
       mediaRecorderRef.current.start();
 
-      const countdownInterval = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-
-      const actionInterval = setInterval(() => {
-        setCurrentActionIndex((prev) => prev + 1);
-      }, 2000);
+      const countdownInterval = setInterval(
+        () => setCountdown((prev) => prev - 1),
+        1000
+      );
+      const actionInterval = setInterval(
+        () => setCurrentActionIndex((prev) => prev + 1),
+        2000
+      );
 
       setTimeout(() => {
         clearInterval(countdownInterval);
@@ -147,10 +124,7 @@ const WebcamRecorder = () => {
       setUploading(true);
       const mimeType = isIOS() ? "video/mp4" : "video/webm";
 
-      const blob = new Blob(recordedChunks, {
-        type: mimeType,
-      });
-
+      const blob = new Blob(recordedChunks, { type: mimeType });
       const formData = new FormData();
       formData.append(
         "video_file",
@@ -164,12 +138,19 @@ const WebcamRecorder = () => {
             `${window.BASE_URL_KNOWME}/v2/sessions/upload/?token=${token}`,
             formData,
             {
-              headers: {
-                "Content-Type": "multipart/form-data",
+              headers: { "Content-Type": "multipart/form-data" },
+              onUploadProgress: (progressEvent) => {
+                const percentage = Math.round(
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+                setUploadProgress(percentage);
               },
             }
           )
           .then((res) => {
+            if (res.status === 401) {
+              window.showToast("error", "نشست شما منقضی شده است!");
+            }
             setUploading(false);
             window.location.href = "/redirect";
           })
@@ -208,8 +189,6 @@ const WebcamRecorder = () => {
 
   const updateTimer = () => {
     const video = videoRef.current;
-
-    // Check if currentTime and duration are valid numbers
     if (!isNaN(video.currentTime) && !isNaN(video.duration)) {
       const formattedCurrentTime = new Date(video.currentTime * 1000)
         .toISOString()
@@ -217,11 +196,9 @@ const WebcamRecorder = () => {
       const formattedDuration = new Date(video.duration * 1000)
         .toISOString()
         .substr(14, 5);
-
       setCurrentTime(formattedCurrentTime);
       setDuration(formattedDuration);
     } else {
-      // Set a default value if currentTime or duration is not valid
       setCurrentTime("00:00");
       setDuration("00:00");
     }
@@ -231,7 +208,7 @@ const WebcamRecorder = () => {
     const video = videoRef.current;
     const progressBar = document.getElementById("progress-bar");
     const progress = (video.currentTime / video.duration) * 100;
-    progressBar.style.width = progress + "%";
+    progressBar.style.width = `${progress}%`;
     updateTimer();
   };
 
@@ -242,16 +219,13 @@ const WebcamRecorder = () => {
     video.currentTime = newTime;
   };
 
-  const handleVideoEnded = () => {
-    setIsPlaying(false); // Reset to show play icon when video ends
-  };
+  const handleVideoEnded = () => setIsPlaying(false);
 
   return (
     <div className="video-container">
-      {screenWidth > 768 ? (
-        <div>
-          {!recordingComplete && (
-            <>
+      {screenWidth > 768
+        ? !recordingComplete && (
+            <div>
               <div className="action-container">
                 <p>دکمه‌ی ضبط را بزنید و سرخود را به جهت‌های زیر بچرخانید</p>
                 <div className="action-images">
@@ -277,13 +251,10 @@ const WebcamRecorder = () => {
                 style={{ height: `${screenHeight - 250}px` }}
                 mirrored={true}
               />
-            </>
-          )}
-        </div>
-      ) : (
-        <div>
-          {!recordingComplete && (
-            <>
+            </div>
+          )
+        : !recordingComplete && (
+            <div>
               <Webcam
                 audio={false}
                 ref={webcamRef}
@@ -292,7 +263,6 @@ const WebcamRecorder = () => {
                 style={{ height: `${screenHeight - 100}px` }}
                 mirrored={true}
               />
-
               <div className="action-container">
                 <p>دکمه‌ی ضبط را بزنید و سرخود را به جهت‌های زیر بچرخانید</p>
                 <div className="action-images">
@@ -310,10 +280,8 @@ const WebcamRecorder = () => {
                   ))}
                 </div>
               </div>
-            </>
+            </div>
           )}
-        </div>
-      )}
 
       {videoUrl ? (
         <div className="preview-container">
@@ -322,18 +290,17 @@ const WebcamRecorder = () => {
               ref={videoRef}
               src={videoUrl}
               className="recorded-video"
-              onClick={togglePlayPause} // Play/pause on video click
+              onClick={togglePlayPause}
               onTimeUpdate={updateProgress}
               onLoadedMetadata={updateTimer}
-              onEnded={handleVideoEnded} // Handle video end to reset play button
-              autoPlay={false} // Start video only when play button is clicked
+              onEnded={handleVideoEnded}
+              autoPlay={false}
               style={{ height: `${screenHeight - 170}px` }}
             />
             <div className="video-controls">
               <div className="time-display">
                 {currentTime} / {duration}
               </div>
-
               <div
                 className="progress-bar-container"
                 onClick={handleSeek}
@@ -344,11 +311,20 @@ const WebcamRecorder = () => {
                 </div>
               </div>
               <button onClick={togglePlayPause} className="play-button">
-                {/* Display play/pause icon depending on the state */}
                 {isPlaying ? "⏸" : "▶️"}
               </button>
             </div>
           </div>
+          {uploading && (
+            <div className="progress-container-video">
+              <div
+                className="progress-bar-video"
+                style={{ width: `${uploadProgress}%` }}
+              >
+                {uploadProgress}%
+              </div>
+            </div>
+          )}
           <div className="buttons-container">
             <button className="record-btn" onClick={handleRecordAgain}>
               ضبط مجدد
@@ -358,24 +334,18 @@ const WebcamRecorder = () => {
               onClick={handleUpload}
               disabled={uploading}
             >
-              {uploading ? "در حال ارسال ویدیو..." : "ارسال ویدیو"}
+              {uploading ? `در حال ارسال ویدیو...` : "ارسال ویدیو"}
             </button>
           </div>
         </div>
+      ) : capturing ? (
+        <button className="record-btn-timing">
+          زمان باقیمانده : {countdown} ثانیه
+        </button>
       ) : (
-        <div>
-          {capturing ? (
-            <div>
-              <button className="record-btn-timing">
-                زمان باقیمانده : {countdown} ثانیه
-              </button>
-            </div>
-          ) : (
-            <button className="record-btn" onClick={handleStartCaptureClick}>
-              ضبط ویدیو
-            </button>
-          )}
-        </div>
+        <button className="record-btn" onClick={handleStartCaptureClick}>
+          ضبط ویدیو
+        </button>
       )}
     </div>
   );

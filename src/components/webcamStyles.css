@@ -230,3 +230,21 @@
     width: 80%;
   }
 }
+
+.progress-container-video {
+  width: 100%;
+  background-color: #f3f3f3;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar-video {
+  height: 20px;
+  background-color: #007bff;
+  text-align: center;
+  color: white;
+  line-height: 20px;
+  border-radius: 5px;
+  transition: width 0.2s ease;
+}

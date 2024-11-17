@@ -24,6 +24,9 @@ const TextDivisionComponent = () => {
     await axios
       .get(`${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`)
       .then((res) => {
+        if (res.status === 401) {
+          window.showToast("error", "نشست شما منقضی شده است!");
+        }
         console.log(res.data.data.instruction);
         const all_actions = res.data.data.instruction;
         const translated = all_actions.map(

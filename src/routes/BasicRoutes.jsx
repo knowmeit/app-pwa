@@ -10,7 +10,7 @@ import RedirectToApp from "../pages/Redirect";
 const routeConfig = [
   { path: "/", component: Welcome, isPrivate: false },
   { path: "/record-video", component: RecordVideo, isPrivate: true },
-  { path: "/help", component: Home, isPrivate: false },
+  { path: "/help", component: Home, isPrivate: true },
   { path: "/result", component: Result, isPrivate: true },
   { path: "/upload-photo", component: CapturePhoto, isPrivate: true },
   { path: "/redirect", component: RedirectToApp, isPrivate: false },
