@@ -1,29 +1,20 @@
-// import React from "react";
-// import useDisableBackNavigation from "../components/BackNavigationPreventer";
-
-// const RedirectToApp = () => {
-//   const redirect = window.localStorage.getItem("redirect_to");
-//   useDisableBackNavigation();
-
-//   const handleNavigate = () => {
-//     window.location.href = redirect;
-//   };
-
-//   return (
-//     <div style={{ marginTop: "100px" }}>
-//       <button onClick={handleNavigate}>بازگشت به برنامه</button>
-//     </div>
-//   );
-// };
-
-// export default RedirectToApp;
-
-import React from "react";
+import React, { useEffect } from "react";
 import useDisableBackNavigation from "../components/BackNavigationPreventer";
+import useUserStep from "../components/UserStep";
 
 const RedirectToApp = () => {
   const redirect = window.localStorage.getItem("redirect_to");
   useDisableBackNavigation();
+ 
+  useEffect(() => {
+    // Automatically redirect after 5 seconds
+    const timer = setTimeout(() => {
+      handleNavigate();
+    }, 5000);
+
+    // Clear the timer if the component unmounts before 5 seconds
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleNavigate = () => {
     try {
@@ -47,7 +38,8 @@ const RedirectToApp = () => {
   };
 
   return (
-    <div style={{ marginTop: "100px" }}>
+    <div style={{ marginTop: "100px", textAlign: "center" }}>
+      <p>در حال بازگشت به اپلیکیشن...</p>
       <button onClick={handleNavigate}>بازگشت به برنامه</button>
     </div>
   );

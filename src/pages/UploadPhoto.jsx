@@ -139,6 +139,12 @@ const CapturePhoto = () => {
 
         const formData = new FormData();
         formData.append("image_file", blob, "photo.png");
+        // Set document_type in the API request
+        if (document_type === "national_card") {
+          formData.append("document_type", "id-card");
+        } else if (document_type === "passport") {
+          formData.append("document_type", "passport");
+        }
 
         await axios
           .post(

@@ -1,69 +1,124 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import useDisableBackNavigation from "../components/BackNavigationPreventer";
-const Welcome = () => {
-  useDisableBackNavigation();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+import { useNavigate } from "react-router-dom";
 
-  useEffect(() => {
+const Welcome = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  // const fetchUserStep = async () => {
+  //   setLoading(true);
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const token = urlParams.get("token");
+  //   try {
+  //     const response = await axios.get(
+  //       `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
+  //     );
+
+  //     if (response.data.code === "session-expired") {
+  //       window.showToast("error", "نشست شما منقضی شده است!");
+  //       const redirect_to = window.localStorage.getItem("redirect_to");
+  //       window.location.href = redirect_to; // Redirect to welcome page
+  //     } else if (response.data.code === "success") {
+  //       const steps = response.data.data.steps;
+
+  //       if (steps.includes("upload-face-video")) {
+  //         navigate("help"); // Redirect to upload video page
+  //       } else if (steps.includes("upload-document")) {
+  //         navigate("/upload-photo"); // Redirect to upload document page
+  //       }
+  //     } else if (response.data.code === "no-more-steps") {
+  //       window.showToast("error", "نشست شما منقضی شده است!");
+  //       const redirect_to = window.localStorage.getItem("redirect_to");
+  //       window.location.href = redirect_to; // Redirect to welcome page
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user step:", error);
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchUserStep = async () => {
+    setLoading(true);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    try {
+      const response = await axios.get(
+        `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
+      );
+
+      if (response.data.code === "session-expired") {
+        window.showToast("error", "نشست شما منقضی شده است!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 3000);
+      } else if (response.data.code === "success") {
+        const steps = response.data.data.steps;
+
+        if (steps.includes("upload-face-video")) {
+          navigate("help");
+        } else if (steps.includes("upload-document")) {
+          navigate("/upload-photo");
+        }
+      } else if (response.data.code === "no-more-steps") {
+        window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error fetching user step:", error);
+      setLoading(false);
+    }
+  };
+
+  const getInstructions = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
 
-    // Check if the 'token' parameter exists (even if empty)
     if (token !== null) {
       window.localStorage.setItem("token", token);
       console.log("Token saved to localStorage:", token);
 
       setLoading(true);
 
-      axios
-        .get(
+      try {
+        const res = await axios.get(
           `${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`
-        )
-        .then((res) => {
-          console.log(res);
-          if (res.status === 200) {
-            const all_actions = res.data.data.instruction;
-            window.sessionStorage.setItem("actions", all_actions);
-            window.localStorage.setItem(
-              "redirect_to",
-              res.data.data.redirect_to
-            );
-            if (
-              res.data.data.service_codename === "liveness-verification-001"
-            ) {
-              window.localStorage.setItem("typeOfAuth", "sabteAhval");
-            } else {
-              window.localStorage.setItem("typeOfAuth", "karteMelli");
-            }
-            window.localStorage.setItem(
-              "service_codename",
-              res.data.data.service_codename
-            );
-            console.log(res);
-            setTimeout(() => {
-              if (
-                res.data.data.service_codename === "liveness-verification-001"
-              ) {
-                navigate("/help");
-              } else {
-                navigate("/upload-photo");
-              }
-            }, 3000);
-          } else if (res.status === 401) {
-            window.showToast("error", "نشست شما منقضی شده است!");
-          } else {
-            window.showToast("error", res.status);
-          }
-        })
-        .catch((error) => {
-          console.error("Error calling API:", error);
-          setLoading(false);
-        });
+        );
+
+        const all_actions = res.data.data.instruction;
+        window.sessionStorage.setItem("actions", all_actions);
+        window.localStorage.setItem("redirect_to", res.data.data.redirect_to);
+        if (res.data.data.service_codename === "liveness-verification-001") {
+          window.localStorage.setItem("typeOfAuth", "sabteAhval");
+        } else {
+          window.localStorage.setItem("typeOfAuth", "karteMelli");
+        }
+        window.localStorage.setItem(
+          "service_codename",
+          res.data.data.service_codename
+        );
+        console.log(res);
+        setTimeout(() => {
+          fetchUserStep();
+        }, 3000);
+      } catch (error) {
+        console.error("Error calling API:", error);
+        // Call fetchUserStep even if there is an error
+        fetchUserStep();
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [navigate]);
+  };
+
+  useEffect(() => {
+    getInstructions();
+  }, []);
 
   return (
     <div style={styles.container}>
