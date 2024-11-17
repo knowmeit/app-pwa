@@ -51,6 +51,30 @@ const WebcamRecorder = () => {
     Up: "/images/up.png",
   };
 
+  const fetchUserStep = async () => {
+    try {
+      const response = await axios.get(
+        `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
+      );
+
+      if (response.data.code === "session-expired") {
+        window.showToast("error", "نشست شما منقضی شده است!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      } else if (response.data.code === "no-more-steps") {
+        window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Error fetching user step:", error);
+    }
+  };
+
   useEffect(() => {
     const updateHeight = () => setScreenHeight(window.innerHeight);
     const updateWidth = () => setScreenWidth(window.innerWidth);
@@ -120,6 +144,7 @@ const WebcamRecorder = () => {
   };
 
   const handleUpload = async () => {
+    fetchUserStep();
     if (recordedChunks.length) {
       setUploading(true);
       const mimeType = isIOS() ? "video/mp4" : "video/webm";
@@ -169,6 +194,7 @@ const WebcamRecorder = () => {
   };
 
   useEffect(() => {
+    fetchUserStep();
     if (recordedChunks.length) {
       const mimeType = isIOS() ? "video/mp4" : "video/webm";
       const videoBlob = new Blob(recordedChunks, { type: mimeType });

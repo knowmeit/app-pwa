@@ -22,6 +22,32 @@ const TextDivisionComponent = () => {
     Up: "بالا",
   };
 
+  const fetchUserStep = async () => {
+
+    try {
+      const response = await axios.get(
+        `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
+      );
+
+      if (response.data.code === "session-expired") {
+        window.showToast("error", "نشست شما منقضی شده است!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      } else if (response.data.code === "no-more-steps") {
+        window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Error fetching user step:", error);
+      
+    }
+  };
+
   const getActions = async () => {
     await axios
       .get(`${window.BASE_URL_KNOWME}/v2/sessions/instruction/?token=${token}`)
@@ -35,17 +61,12 @@ const TextDivisionComponent = () => {
         window.sessionStorage.setItem("actions", all_actions);
       })
       .catch((e) => {
-        if (e.response.data.code === "session-expired") {
-          window.showToast("error", "نشست شما منقضی شده است!");
-          const redirect_to = window.localStorage.getItem("redirect_to");
-          setTimeout(() => {
-            window.location.href = redirect_to;
-          }, 4000);
-        }
+        console.log(e);
       });
   };
 
   useEffect(() => {
+    fetchUserStep();
     getActions();
   }, []);
 
