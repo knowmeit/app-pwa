@@ -18,19 +18,24 @@ const Welcome = () => {
   //     if (response.data.code === "session-expired") {
   //       window.showToast("error", "نشست شما منقضی شده است!");
   //       const redirect_to = window.localStorage.getItem("redirect_to");
-  //       window.location.href = redirect_to; // Redirect to welcome page
+  //       setTimeout(() => {
+  //         window.location.href = redirect_to;
+  //       }, 4000);
   //     } else if (response.data.code === "success") {
   //       const steps = response.data.data.steps;
 
   //       if (steps.includes("upload-face-video")) {
-  //         navigate("help"); // Redirect to upload video page
+  //         navigate("help");
   //       } else if (steps.includes("upload-document")) {
-  //         navigate("/upload-photo"); // Redirect to upload document page
+  //         navigate("/upload-photo");
   //       }
   //     } else if (response.data.code === "no-more-steps") {
-  //       window.showToast("error", "نشست شما منقضی شده است!");
+  //       window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
   //       const redirect_to = window.localStorage.getItem("redirect_to");
-  //       window.location.href = redirect_to; // Redirect to welcome page
+
+  //       setTimeout(() => {
+  //         window.location.href = redirect_to;
+  //       }, 4000);
   //     }
   //   } catch (error) {
   //     console.error("Error fetching user step:", error);
@@ -42,6 +47,7 @@ const Welcome = () => {
     setLoading(true);
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
+
     try {
       const response = await axios.get(
         `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
@@ -52,22 +58,27 @@ const Welcome = () => {
         const redirect_to = window.localStorage.getItem("redirect_to");
         setTimeout(() => {
           window.location.href = redirect_to;
-        }, 3000);
+        }, 4000);
       } else if (response.data.code === "success") {
         const steps = response.data.data.steps;
 
-        if (steps.includes("upload-face-video")) {
-          navigate("help");
+        // Check if both steps are present
+        if (
+          steps.includes("upload-document") &&
+          steps.includes("upload-face-video")
+        ) {
+          navigate("/upload-photo");
+        } else if (steps.includes("upload-face-video")) {
+          navigate("/record-video");
         } else if (steps.includes("upload-document")) {
           navigate("/upload-photo");
         }
       } else if (response.data.code === "no-more-steps") {
         window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
         const redirect_to = window.localStorage.getItem("redirect_to");
-
         setTimeout(() => {
           window.location.href = redirect_to;
-        }, 3000);
+        }, 4000);
       }
     } catch (error) {
       console.error("Error fetching user step:", error);

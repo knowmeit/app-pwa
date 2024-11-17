@@ -148,9 +148,6 @@ const WebcamRecorder = () => {
             }
           )
           .then((res) => {
-            if (res.status === 401) {
-              window.showToast("error", "نشست شما منقضی شده است!");
-            }
             setUploading(false);
             window.location.href = "/redirect";
           })
@@ -159,7 +156,13 @@ const WebcamRecorder = () => {
             window.showToast("error", e.response.data.detail);
           });
       } catch (error) {
-        console.error("Error uploading video:", error);
+        if (e.response.data.code === "session-expired") {
+          window.showToast("error", "نشست شما منقضی شده است!");
+          const redirect_to = window.localStorage.getItem("redirect_to");
+          setTimeout(() => {
+            window.location.href = redirect_to;
+          }, 4000);
+        }
         setUploading(false);
       }
     }
