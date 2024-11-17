@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import useDisableBackNavigation from "../components/BackNavigationPreventer";
-import useUserStep from "../components/UserStep";
 
 const RedirectToApp = () => {
   const redirect = window.localStorage.getItem("redirect_to");
   useDisableBackNavigation();
- 
+
   useEffect(() => {
     // Automatically redirect after 5 seconds
     const timer = setTimeout(() => {
@@ -39,7 +38,7 @@ const RedirectToApp = () => {
 
   return (
     <div style={{ marginTop: "100px", textAlign: "center" }}>
-      <p>در حال بازگشت به اپلیکیشن...</p>
+      <p>در حال بازگشت به برنامه...</p>
       <button onClick={handleNavigate}>بازگشت به برنامه</button>
     </div>
   );

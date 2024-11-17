@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useDisableBackNavigation from "../components/BackNavigationPreventer";
 
 const Welcome = () => {
+  useDisableBackNavigation();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
