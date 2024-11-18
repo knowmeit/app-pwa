@@ -181,13 +181,13 @@ const WebcamRecorder = () => {
             window.showToast("error", e.response.data.detail);
           });
       } catch (error) {
-        if (e.response.data.code === "session-expired") {
-          window.showToast("error", "نشست شما منقضی شده است!");
-          const redirect_to = window.localStorage.getItem("redirect_to");
-          setTimeout(() => {
-            window.location.href = redirect_to;
-          }, 4000);
-        }
+        // if (e.response.data.code === "session-expired") {
+        //   window.showToast("error", "نشست شما منقضی شده است!");
+        //   const redirect_to = window.localStorage.getItem("redirect_to");
+        //   setTimeout(() => {
+        //     window.location.href = redirect_to;
+        //   }, 4000);
+        // }
         setUploading(false);
       }
     }

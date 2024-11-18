@@ -71,7 +71,7 @@ const Welcome = () => {
         ) {
           navigate("/upload-photo");
         } else if (steps.includes("upload-face-video")) {
-          navigate("/record-video");
+          navigate("/help");
         } else if (steps.includes("upload-document")) {
           navigate("/upload-photo");
         }
@@ -125,7 +125,6 @@ const Welcome = () => {
         fetchUserStep();
         setLoading(false);
       } finally {
-       
       }
     }
   };
