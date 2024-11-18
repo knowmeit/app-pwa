@@ -54,8 +54,33 @@ const CapturePhoto = () => {
     }
   };
 
+  const fetchUserStep = async () => {
+    try {
+      const response = await axios.get(
+        `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
+      );
+
+      if (response.data.code === "session-expired") {
+        window.showToast("error", "نشست شما منقضی شده است!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      } else if (response.data.code === "no-more-steps") {
+        window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Error fetching user step:", error);
+    }
+  };
+
   // Effect to handle camera start and stop on changes
   useEffect(() => {
+    fetchUserStep();
     if (send_photo_type === "camera") {
       startCamera();
     }
@@ -126,6 +151,7 @@ const CapturePhoto = () => {
   };
 
   const sendPhotoToAPI = async () => {
+    fetchUserStep();
     if (photoTaken) {
       set_loading(true);
       try {
@@ -324,7 +350,7 @@ const CapturePhoto = () => {
           marginTop: "20px",
         }}
       >
-        {isPhotoTaken ? "بارگذاری مجدد عکس" : "بارگذاری عکس"}
+        {isPhotoTaken ? "بارگذاری مجدد عکس" : "گرفتن عکس"}
       </button>
 
       {isPhotoTaken && (

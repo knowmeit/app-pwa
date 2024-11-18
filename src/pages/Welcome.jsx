@@ -123,8 +123,9 @@ const Welcome = () => {
         console.error("Error calling API:", error);
         // Call fetchUserStep even if there is an error
         fetchUserStep();
-      } finally {
         setLoading(false);
+      } finally {
+       
       }
     }
   };
