@@ -350,7 +350,7 @@ const CapturePhoto = () => {
           marginTop: "20px",
         }}
       >
-        {isPhotoTaken ? "بارگذاری مجدد عکس" : "بارگذاری عکس"}
+        {isPhotoTaken ? "بارگذاری مجدد عکس" : "گرفتن عکس"}
       </button>
 
       {isPhotoTaken && (
