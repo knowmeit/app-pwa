@@ -6,6 +6,7 @@ import Result from "../pages/Result";
 import Welcome from "../pages/Welcome";
 import CapturePhoto from "../pages/UploadPhoto";
 import RedirectToApp from "../pages/Redirect";
+import ChoosePhotoType from "../pages/ChoosePhotoType";
 
 const routeConfig = [
   { path: "/", component: Welcome, isPrivate: false },
@@ -14,6 +15,7 @@ const routeConfig = [
   { path: "/result", component: Result, isPrivate: true },
   { path: "/upload-photo", component: CapturePhoto, isPrivate: true },
   { path: "/redirect", component: RedirectToApp, isPrivate: false },
+  { path: "/photo-type", component: ChoosePhotoType, isPrivate: true },
 ];
 
 const PrivateRoute = ({ children }) => {

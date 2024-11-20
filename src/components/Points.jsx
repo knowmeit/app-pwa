@@ -4,8 +4,8 @@ import axios from "axios";
 import useDisableBackNavigation from "./BackNavigationPreventer";
 
 const TextDivisionComponent = () => {
-  const token = window.localStorage.getItem("token");
   useDisableBackNavigation();
+  const token = window.localStorage.getItem("token");
   const navigate = useNavigate();
   const [actions, set_actions] = useState([]);
 
@@ -23,11 +23,11 @@ const TextDivisionComponent = () => {
   };
 
   const fetchUserStep = async () => {
-
     try {
       const response = await axios.get(
         `${window.BASE_URL_KNOWME}/v2/sessions/state/?token=${token}`
       );
+      console.log(response);
 
       if (response.data.code === "session-expired") {
         window.showToast("error", "نشست شما منقضی شده است!");
@@ -43,8 +43,19 @@ const TextDivisionComponent = () => {
         }, 4000);
       }
     } catch (error) {
-      console.error("Error fetching user step:", error);
-      
+      if (error.response.data.code === "session-expired") {
+        window.showToast("error", "نشست شما منقضی شده است!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      } else if (error.response.data.code === "no-more-steps") {
+        window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
+        const redirect_to = window.localStorage.getItem("redirect_to");
+        setTimeout(() => {
+          window.location.href = redirect_to;
+        }, 4000);
+      }
     }
   };
 
