@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDisableBackNavigation from "../components/BackNavigationPreventer";
+import axios from "axios";
 
 const ChoosePhotoType = () => {
   const navigate = useNavigate();
@@ -40,10 +41,12 @@ const ChoosePhotoType = () => {
           window.location.href = redirect_to;
         }, 4000);
       }
+      console.log(error);
     }
   };
 
   useEffect(() => {
+    fetchUserStep();
     const handleResize = () => {
       setScreenHeight(window.innerHeight);
     };
