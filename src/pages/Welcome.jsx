@@ -32,11 +32,11 @@ const Welcome = () => {
           steps.includes("upload-document") &&
           steps.includes("upload-face-video")
         ) {
-          navigate("/upload-photo");
+          navigate("/photo-type");
         } else if (steps.includes("upload-face-video")) {
           navigate("/help");
         } else if (steps.includes("upload-document")) {
-          navigate("/upload-photo");
+          navigate("/photo-type");
         }
       } else if (response.data.code === "no-more-steps") {
         window.showToast("error", "شما قبلا ویدیو خود را ارسال کرده اید!");
