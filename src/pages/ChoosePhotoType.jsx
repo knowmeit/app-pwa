@@ -4,6 +4,7 @@ import useDisableBackNavigation from "../components/BackNavigationPreventer";
 import axios from "axios";
 
 const ChoosePhotoType = () => {
+  useDisableBackNavigation();
   const navigate = useNavigate();
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const token = window.localStorage.getItem("token");

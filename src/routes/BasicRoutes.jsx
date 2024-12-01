@@ -20,7 +20,7 @@ const routeConfig = [
 
 const PrivateRoute = ({ children }) => {
   const token = window.localStorage.getItem("token");
-  return token ? children : <ChooseAuthentication />;
+  return token ? children : <Welcome />;
 };
 
 const BasicRoutes = () => {

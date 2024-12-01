@@ -2,8 +2,10 @@ import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import "./webcamStyles.css";
+import { useNavigate } from "react-router-dom";
 
 const WebcamRecorder = () => {
+  const navigate = useNavigate();
   const webcamRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const videoRef = useRef(null);
@@ -153,6 +155,10 @@ const WebcamRecorder = () => {
     setVideoUrl(null);
     setRecordingComplete(false);
     handleStartCaptureClick();
+  };
+
+  const handleNavigate = () => {
+    navigate("/help");
   };
 
   const handleUpload = async () => {
@@ -384,9 +390,12 @@ const WebcamRecorder = () => {
           زمان باقیمانده : {countdown} ثانیه
         </button>
       ) : (
-        <button className="record-btn" onClick={handleStartCaptureClick}>
-          ضبط ویدیو
-        </button>
+        <>
+          <button className="record-btn" onClick={handleStartCaptureClick}>
+            ضبط ویدیو
+          </button>
+          <button onClick={handleNavigate}>بازگشت به عقب </button>
+        </>
       )}
     </div>
   );

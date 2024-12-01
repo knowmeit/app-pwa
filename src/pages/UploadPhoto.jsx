@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import CustomFileInput from "../components/CustomeInput";
 import { useNavigate } from "react-router-dom";
+import useDisableBackNavigation from "../components/BackNavigationPreventer";
 
 const CapturePhoto = () => {
+  useDisableBackNavigation();
   const [photoTaken, setPhotoTaken] = useState(null);
   const [isPhotoTaken, setIsPhotoTaken] = useState(false);
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
@@ -15,6 +17,10 @@ const CapturePhoto = () => {
   const token = window.localStorage.getItem("token");
   const [loading, set_loading] = useState(false);
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/photo-type");
+  };
 
   const isIOS = () =>
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -82,6 +88,7 @@ const CapturePhoto = () => {
           window.location.href = redirect_to;
         }, 4000);
       }
+      console.log(error);
     }
   };
 
@@ -247,6 +254,10 @@ const CapturePhoto = () => {
         </div>
       )}
 
+      <button onClick={handleNavigate} style={{ margin: "10px auto" }}>
+        بازگشت به عقب
+      </button>
+
       {!isPhotoTaken && send_photo_type === "camera" && (
         <div
           style={{
@@ -298,12 +309,23 @@ const CapturePhoto = () => {
 
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
-      <button
-        onClick={isPhotoTaken ? retakePhoto : takePhoto}
-        style={{ padding: "10px 20px", fontSize: "16px", marginTop: "20px" }}
-      >
-        {isPhotoTaken ? "بارگذاری مجدد عکس" : "گرفتن عکس"}
-      </button>
+      {isPhotoTaken ? (
+        <button
+          onClick={isPhotoTaken ? retakePhoto : takePhoto}
+          style={{ padding: "10px 20px", fontSize: "16px", marginTop: "20px" }}
+        >
+          بارگذاری مجدد عکس
+        </button>
+      ) : null}
+
+      {send_photo_type === "camera" && !isPhotoTaken ? (
+        <button
+          onClick={isPhotoTaken ? retakePhoto : takePhoto}
+          style={{ padding: "10px 20px", fontSize: "16px", marginTop: "20px" }}
+        >
+          گرفتن عکس
+        </button>
+      ) : null}
 
       {isPhotoTaken && (
         <button
