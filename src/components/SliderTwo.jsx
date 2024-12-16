@@ -1,3 +1,4 @@
+// // SliderComponent.js
 import React from "react";
 import { Scrollbar, Pagination, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,15 +9,15 @@ const SliderComponentTwo = () => {
   return (
     <div className="slider-container">
       <Swiper
-        modules={[Autoplay]}
+        modules={[Autoplay, Pagination]} // Include Pagination here
         autoplay={{
-          delay: 3000, // 2 seconds
+          delay: 3000,
           disableOnInteraction: false,
         }}
         spaceBetween={50}
         slidesPerView={1}
-        pagination={{ clickable: true, type: "bullets" }}
-        loop={true} /* Enable continuous loop */
+        pagination={{ clickable: true, type: "bullets" }} // Enable pagination
+        loop={true} // Enable continuous loop
       >
         <SwiperSlide>
           <div className="slide">
@@ -36,16 +37,6 @@ const SliderComponentTwo = () => {
         <SwiperSlide>
           <div className="slide">
             <img src="/images/4.png" alt="Slide 4" />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="slide">
-            <img src="/images/5.png" alt="Slide 5" />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="slide">
-            <img src="/images/6.png" alt="Slide 6" />
           </div>
         </SwiperSlide>
       </Swiper>
