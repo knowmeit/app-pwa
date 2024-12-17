@@ -117,14 +117,14 @@ const TextDivisionComponent = () => {
                 <h3>راهنمای احراز هویت ویدیویی</h3>
                 <ol>
                   <li>مطمئن شوید که نور مناسب برای ضبط ویدیو وجود دارد.</li>
-                  <li>در زمان تعیین شده سعی کنید دستورالعمل را اجرا کنید</li>
+                 <li>لطفا در یک محیط آرام و در زمان تعیین شده، سعی کنید دستورالعمل را اجرا کنید.</li>
                   <li>
                     پس از فشردن دکمه ضبط، جمله زیر را شمرده و با صدای بلند
                     بخوانید:
                   </li>
                 </ol>
 
-                <p style={{ marginRight: "20px" }}>
+                <p style={{ marginRight: "25px" }}>
                   <b>{sentence}</b>
                 </p>
                 <button className="continue-btn" onClick={handleRecord}>

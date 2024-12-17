@@ -11,7 +11,7 @@ import VoiceRecorder from "../components/VoiceRecorder";
 const routeConfig = [
   { path: "/", component: Welcome, isPrivate: false },
   { path: "/record-video", component: RecordVideo, isPrivate: true },
-  { path: "/voice-recorder", component: VoiceRecorder, isPrivate: false },
+  { path: "/voice-recorder", component: VoiceRecorder, isPrivate: true },
   { path: "/help", component: Home, isPrivate: true },
   { path: "/upload-photo", component: CapturePhoto, isPrivate: true },
   { path: "/redirect", component: RedirectToApp, isPrivate: false },
