@@ -10,7 +10,7 @@ const WebcamRecorder = () => {
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
-  const [countdown, setCountdown] = useState(6);
+  const [countdown, setCountdown] = useState(8);
   const [recordingComplete, setRecordingComplete] = useState(false); // Track recording status
   const token =
     "NDcyYmE5ODUtMTE4NC00Yzk1LWI5MmMtODE4ZWIwOGRmZTU3OjFzb0twTDo0eTZGSWR3MG5jNHhreXU1WGVDN3B1dkJjLWdlQ21sWm1LZ0JxNWd4dEJn";
@@ -38,7 +38,7 @@ const WebcamRecorder = () => {
 
     if (webcamRef.current && webcamRef.current.stream) {
       setCapturing(true);
-      setCountdown(6);
+      setCountdown(8);
       mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
         mimeType,
       });
